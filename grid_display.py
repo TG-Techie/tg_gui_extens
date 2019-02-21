@@ -28,12 +28,14 @@ class grid(gui.refreshable_widget):
     the most recent 2d list of lists. the input
     array should be in [x][y] reference.
     """
-    def __init__(self, x, y, width, superior, refresher, color_mask = (1, 0, 0), background = None):
+    def __init__(self, x, y, width, superior, refresher, color_mask = (1, 0, 0), background = None, filter_factor = 2):
         self._last_num_sides = 0
         self.color_mask = color_mask
+        self.filter_factor = filter_factor
         if background == None:
             background = gui.default_background_color
         self.background = background
+        #self._prev_data = {}
         super().__init__(x, y, width, width, superior, refresher)
 
 
@@ -70,11 +72,18 @@ class grid(gui.refreshable_widget):
         if self._active:
             for x in range(num_sides):
                 for y in range(num_sides):
-                    val = (data[x][y]-min_val)/(max_val-min_val)
-                    #print(x, y, val)
-                    gui.round_rect(self.physical_x + pixel_width*x, self.physical_y + pixel_width*y,
-                                    pixel_width, pixel_width, 0,
-                                    gui.color(  int(gui.color_max *(1*val - (not self.color_mask[0]))),
-                                                int(gui.color_max *(1*val - (not self.color_mask[1]))),
-                                                int(gui.color_max *(1*val - (not self.color_mask[2])))
-                                              ))
+                    val = ((data[x][y]-min_val)**self.filter_factor)/((max_val-min_val)**self.filter_factor)
+                    '''try:
+                        should_place = self._prev_data[(x,y)] != int(data[x][y])
+                    except KeyError:
+                        self._prev_data[(x,y)] = int(data[x][y])
+                        should_place = True'''
+                    if True:
+                        print(int(gui.color_max*((1,val)[self.color_mask[0]])),
+                                                    int(gui.color_max*((1,val)[self.color_mask[1]])),
+                                                    int(gui.color_max*((1,val)[self.color_mask[2]])))
+                        gui.round_rect(self.physical_x + pixel_width*x, self.physical_y + pixel_width*y,
+                                        pixel_width, pixel_width, 0,
+                                        gui.color(  int(gui.color_max*val),#*((1,val)[self.color_mask[0]])),
+                                                    int(gui.color_max*val),#*((1,val)[self.color_mask[1]])),
+                                                    int(gui.color_max*val),))#*((1,val)[self.color_mask[2]])),))
