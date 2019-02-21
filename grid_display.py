@@ -35,10 +35,8 @@ class grid(gui.refreshable_widget):
         if background == None:
             background = gui.default_background_color
         self.background = background
-        #self._prev_data = {}
         super().__init__(x, y, width, width, superior, refresher)
-
-
+        self._prev_data = [['bridge of death']*len(x) for x in self.refresher(self)]
 
     def refresh(self):
         data = self.refresher(self)
@@ -63,6 +61,8 @@ class grid(gui.refreshable_widget):
                 max_val = max(max_val, data[x][y])
                 min_val = min(min_val, data[x][y])
 
+        self.max_val = max_val
+        self.min_val = min_val
 
         #clear if different to prevent artifacts
         if not num_sides == self._last_num_sides:
@@ -73,17 +73,10 @@ class grid(gui.refreshable_widget):
             for x in range(num_sides):
                 for y in range(num_sides):
                     val = ((data[x][y]-min_val)**self.filter_factor)/((max_val-min_val)**self.filter_factor)
-                    '''try:
-                        should_place = self._prev_data[(x,y)] != int(data[x][y])
-                    except KeyError:
-                        self._prev_data[(x,y)] = int(data[x][y])
-                        should_place = True'''
-                    if True:
-                        print(int(gui.color_max*((1,val)[self.color_mask[0]])),
-                                                    int(gui.color_max*((1,val)[self.color_mask[1]])),
-                                                    int(gui.color_max*((1,val)[self.color_mask[2]])))
+                    if self._prev_data[x][y] != int(data[x][y]):
                         gui.round_rect(self.physical_x + pixel_width*x, self.physical_y + pixel_width*y,
                                         pixel_width, pixel_width, 0,
                                         gui.color(  int(gui.color_max*val),#*((1,val)[self.color_mask[0]])),
                                                     int(gui.color_max*val),#*((1,val)[self.color_mask[1]])),
                                                     int(gui.color_max*val),))#*((1,val)[self.color_mask[2]])),))
+                        self._prev_data[x][y] = int(data[x][y])
