@@ -35,7 +35,11 @@ class grid(gui.refreshable_widget):
         if background == None:
             background = gui.default_background_color
         self.background = background
+        self.max_val = None
+        self.min_val = None
+        print(self.max_val, self.min_val)
         super().__init__(x, y, width, width, superior, refresher)
+
 
     def place(self):
         super().place()
