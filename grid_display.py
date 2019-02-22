@@ -39,9 +39,10 @@ class grid(gui.refreshable_widget):
 
     def place(self):
         super().place()
-        self._prev_data = [['bridge of death']*len(x) for x in self.refresher(self)]
+        self._prev_data = [[1701]*len(x) for x in self.refresher(self)]
+        self.refresh(force = True)
 
-    def refresh(self):
+    def refresh(self, force = False):
         data = self.refresher(self)
 
         #find the shortest dimension
@@ -76,10 +77,11 @@ class grid(gui.refreshable_widget):
             for x in range(num_sides):
                 for y in range(num_sides):
                     val = ((data[x][y]-min_val)**self.filter_factor)/((max_val-min_val)**self.filter_factor)
-                    if self._prev_data[x][y] != int(data[x][y]):
+                    color = int(gui.color_max*(1-val)/10)*10
+                    if  force or self._prev_data[x][y] != color:
                         gui.round_rect(self.physical_x + pixel_width*x, self.physical_y + pixel_width*y,
                                         pixel_width, pixel_width, 0,
-                                        gui.color(  int(gui.color_max*val),#*((1,val)[self.color_mask[0]])),
-                                                    int(gui.color_max*val),#*((1,val)[self.color_mask[1]])),
-                                                    int(gui.color_max*val),))#*((1,val)[self.color_mask[2]])),))
-                        self._prev_data[x][y] = int(data[x][y])
+                                        gui.color((color, gui.color_max)[self.color_mask[0]],
+                                                    (color, gui.color_max)[self.color_mask[1]],
+                                                    (color, gui.color_max)[self.color_mask[2]]))
+                        self._prev_data[x][y] = color
