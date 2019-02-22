@@ -36,6 +36,9 @@ class grid(gui.refreshable_widget):
             background = gui.default_background_color
         self.background = background
         super().__init__(x, y, width, width, superior, refresher)
+
+    def place(self):
+        super().place()
         self._prev_data = [['bridge of death']*len(x) for x in self.refresher(self)]
 
     def refresh(self):
