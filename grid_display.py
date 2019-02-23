@@ -47,45 +47,46 @@ class grid(gui.refreshable_widget):
         self.refresh(force = True)
 
     def refresh(self, force = False):
-        data = self.refresher(self)
-
-        #find the shortest dimension
-        num_sides = 50000
-        shortest_col = None
-        for col in data:
-           if len(col) < num_sides:
-               shortest_col = col
-               num_sides = len(col)
-               num_sides = min(num_sides, len(data))
-
-        #sizing calcs
-        pixel_width = self.width // num_sides
-
-        #find color scaling
-        max_val = -6.022*10**23
-        min_val =  6.022*10**23
-        for x in range(num_sides):
-            for y in range(num_sides):
-                max_val = max(max_val, data[x][y])
-                min_val = min(min_val, data[x][y])
-
-        self.max_val = max_val
-        self.min_val = min_val
-
-        #clear if different to prevent artifacts
-        if not num_sides == self._last_num_sides:
-            gui.round_rect(self.physical_x, self.physical_y, self.width, self.height, 0, self.background)
-            self._last_num_sides = num_sides
-
         if self._active:
+            data = self.refresher(self)
+
+            #find the shortest dimension
+            num_sides = 50000
+            shortest_col = None
+            for col in data:
+               if len(col) < num_sides:
+                   shortest_col = col
+                   num_sides = len(col)
+                   num_sides = min(num_sides, len(data))
+
+            #sizing calcs
+            pixel_width = self.width // num_sides
+
+            #find color scaling
+            max_val = -6.022*10**23
+            min_val =  6.022*10**23
             for x in range(num_sides):
                 for y in range(num_sides):
-                    val = ((data[x][y]-min_val)**self.filter_factor)/((max_val-min_val)**self.filter_factor)
-                    color = int(gui.color_max*(1-val)/10)*10
-                    if  force or self._prev_data[x][y] != color:
-                        gui.round_rect(self.physical_x + pixel_width*x, self.physical_y + pixel_width*y,
-                                        pixel_width, pixel_width, 0,
-                                        gui.color((color, gui.color_max)[self.color_mask[0]],
-                                                    (color, gui.color_max)[self.color_mask[1]],
-                                                    (color, gui.color_max)[self.color_mask[2]]))
-                        self._prev_data[x][y] = color
+                    max_val = max(max_val, data[x][y])
+                    min_val = min(min_val, data[x][y])
+
+            self.max_val = max_val
+            self.min_val = min_val
+
+            #clear if different to prevent artifacts
+            if not num_sides == self._last_num_sides:
+                gui.round_rect(self.physical_x, self.physical_y, self.width, self.height, 0, self.background)
+                self._last_num_sides = num_sides
+
+            if self._active:
+                for x in range(num_sides):
+                    for y in range(num_sides):
+                        val = ((data[x][y]-min_val)**self.filter_factor)/((max_val-min_val)**self.filter_factor)
+                        color = int(gui.color_max*(1-val)/10)*10
+                        if  force or self._prev_data[x][y] != color:
+                            gui.round_rect(self.physical_x + pixel_width*x, self.physical_y + pixel_width*y,
+                                            pixel_width, pixel_width, 0,
+                                            gui.color((color, gui.color_max)[self.color_mask[0]],
+                                                        (color, gui.color_max)[self.color_mask[1]],
+                                                        (color, gui.color_max)[self.color_mask[2]]))
+                            self._prev_data[x][y] = color
