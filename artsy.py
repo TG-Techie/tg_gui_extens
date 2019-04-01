@@ -19,11 +19,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-from tg_gui.gui import widget, round_rect, default_color, white, good_gap_size
+from tg_gui.gui import widget, round_rect, default_color, white, good_gap_size, _do_nothing
 
 class canvas(widget):
 
-    def __init__(self, x, y, width, height, superior, *args, border = good_gap_size, border_color = default_color, color = white, on_place = gui._do_nothing):
+    def __init__(self, x, y, width, height, superior, *args, border = good_gap_size, border_color = default_color, color = white, on_place = _do_nothing):
         """
         :param x:
         :param y:
