@@ -23,8 +23,15 @@ from tg_gui.gui import widget, round_rect, default_color, white, good_gap_size
 
 class canvas(widget):
 
-    def __init__(self, x, y, width, height, *args, border = good_gap_size, border_color = default_color, color = white, on_place = gui._do_nothing):
-        super().__init__(x+border, y+border, width-border*2, height-border*2, *args)
+    def __init__(self, x, y, width, height, superior, *args, border = good_gap_size, border_color = default_color, color = white, on_place = gui._do_nothing):
+        """
+        :param x:
+        :param y:
+        :param width:
+        :param height:
+        :param superior:
+        """
+        super().__init__(x+border, y+border, width-border*2, height-border*2, superior, *args)
         #print(*args)
         self._border = border
         self._border_color = border_color
